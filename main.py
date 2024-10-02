@@ -90,7 +90,7 @@ update_channels=[-1002005665951,-1002128618822]
 ignored_users = [15966619410, 9876543210]
 
 #منع نقل رسائل معينة 
-ignored_words = ["https://t.me/FLV_HUB","‼️"]
+ignored_words = ["https://t.me/FLV_HUB","‼️","@ForexLeaks_bot","@vip_leaked","ForexLeakers"]
 
 # قائمة الكلمات التي يجب حذفها
 words_to_remove = ["Joooooooookes",]
