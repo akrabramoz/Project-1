@@ -25,8 +25,8 @@ source_destination_mapping = {
      -1002085835882:[-1002054664542],
  #Fx Elite Club 
   -1001900522662:[-1002134643748],
- #Easy Forex GOLD
-     -1001937419218:[-1002034191954],
+ #Foundxations
+     -1001939711079:[-1002034191954],
  #Fx Predators 
   -1002003384897:[-1002032658531],
  #Mike Syndicate
