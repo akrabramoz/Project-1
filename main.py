@@ -102,7 +102,7 @@ ignored_users = [15966619410, 9876543210]
 #منع نقل رسائل معينة 
 ignored_words = ["https://t.me/FLV_HUB","‼️","@ForexLeaks_bot","@vip_leaked","ForexLeakers","octafx","You will get all these vips for absolutely FREE",
                  "@Paragons_FX","𝙡𝙚𝙖𝙠𝙚𝙙 𝙑𝙄𝙋𝙨 ","❗️","VIPS","☄️","🔼","@FLV_HUB","𝗔𝗧𝗧𝗘𝗡𝗧𝗜𝗢𝗡","Removing"," 𝗱𝗲𝗽𝗼𝘀𝗶𝘁𝗲𝗱 $𝟯𝟬𝟬"," 𝘂𝗽𝗱𝗮𝘁𝗲𝘀",
-                 "🔗 https://t.me/","ᴛɪʟʟ ᴇᴠᴇʀʏᴏɴᴇ ᴘʟᴇꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ʙʀᴏᴀᴅᴄᴀꜱᴛ"," vips",]
+                 "https://t.me/","ᴛɪʟʟ ᴇᴠᴇʀʏᴏɴᴇ ᴘʟᴇꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ʙʀᴏᴀᴅᴄᴀꜱᴛ"," vips","⚠️","t.me",]
 
 # قائمة الكلمات التي يجب حذفها
 words_to_remove = ["Joooooooookes",]
