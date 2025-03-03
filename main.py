@@ -167,6 +167,21 @@ def copy_message(client, message):
                         print("Message already exists, skipping...")
                         return
 
+        #بداية التعديل 
+# منع نقل الرسائل القصيرة (أقل من 5 أحرف)
+        message_content = message.text or message.caption or ""
+        if message_content and len(message_content) < 5:
+            print("Message too short, skipping...")
+            return
+        
+        # منع نقل الرسائل التي تم إنشاؤها في نفس الوقت في قنوات المصدر
+        if source_channel_id in message_timestamps:
+            if message.date and message.date == message_timestamps[source_channel_id]:
+                print("Skipping duplicate message with the same timestamp")
+                return
+        message_timestamps[source_channel_id] = message.date
+        #نهاية التعديل
+        
         
             # حذف الكلمات المحددة من الرسالة واستبدال الجمل
             if message.text:
