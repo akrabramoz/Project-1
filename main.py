@@ -119,7 +119,21 @@ def replace_phrases(text):
     for original_phrase, new_phrase in phrases_to_replace.items():
         text = re.sub(r'\b' + re.escape(original_phrase) + r'\b', new_phrase, text)
     return text
+    
+#بداية التعديل 
+# منع نقل الرسائل القصيرة (أقل من 5 أحرف)
+        message_content = message.text or message.caption or ""
+        if len(message_content) < 5:
+            print("Message too short, skipping...")
+            return
+        
+        # منع نقل الرسائل التي تم إنشاؤها في نفس الوقت في قنوات المصدر
+        if source_channel_id in message_timestamps:
+            if message.date == message_timestamps[source_channel_id]:
+                print("Skipping duplicate message with the same timestamp")
+                return 
 
+# نهاية التعديل 
 
 def update_target_channel(client, source_channel, target_channel, messages):
     for source_msg, target_msg in zip(messages[source_channel], messages[target_channel]):
