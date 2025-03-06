@@ -1,11 +1,11 @@
-
 import re
 from pyrogram import Client, filters
-import subprocess
 from datetime import datetime
+import os
 
-api_id = '20428083'  # استبدل بقيمك الخاصة
-api_hash = 'c2c7f4fd4c392d80f859466a73b677f5'  # استبدل بقيمك الخاصة
+# الحصول على بيانات الاعتماد من متغيرات البيئة في Heroku
+api_id = int(os.getenv("API_ID", "20428083"))  # استبدل بقيمك الخاصة
+api_hash = os.getenv("API_HASH", "c2c7f4fd4c392d80f859466a73b677f5")  # استبدل بقيمك الخاصة
 
 # الحد الأدنى لعدد الأحرف المسموح بنقلها
 min_message_length = 5  # يمكن تغيير هذا الرقم حسب الحاجة
@@ -214,4 +214,5 @@ def copy_message(client, message):
         print(f"An error occurred: {e}")
 
 # تشغيل البوت
+print("Starting the bot...")
 app.run()
