@@ -1,10 +1,11 @@
+
 import re
 from pyrogram import Client, filters
 import subprocess
 from datetime import datetime
 
-api_id = '20428083'
-api_hash = 'c2c7f4fd4c392d80f859466a73b677f5'
+api_id = '20428083'  # استبدل بقيمك الخاصة
+api_hash = 'c2c7f4fd4c392d80f859466a73b677f5'  # استبدل بقيمك الخاصة
 
 # الحد الأدنى لعدد الأحرف المسموح بنقلها
 min_message_length = 5  # يمكن تغيير هذا الرقم حسب الحاجة
@@ -197,23 +198,20 @@ def copy_message(client, message):
                 else:
                     client.copy_message(chat_id=dest_channel_id, from_chat_id=message.chat.id, message_id=message.id)
             else:
-                if source_channel_id in special_sources and message.caption:
-                    client.send_message(chat_id=dest_channel_id, text=message.caption)
-                else:
-                    if message_text:
-                        if message.photo:
-                            client.send_photo(chat_id=dest_channel_id, photo=message.photo.file_id, caption=message_text)
-                        elif message.video:
-                            client.send_video(chat_id=dest_channel_id, video=message.video.file_id, caption=message_text)
-                        elif message.document:
-                            client.send_document(chat_id=dest_channel_id, document=message.document.file_id, caption=message_text)
-                        else:
-                            client.send_message(chat_id=dest_channel_id, text=message_text)
+                if message_text:
+                    if message.photo:
+                        client.send_photo(chat_id=dest_channel_id, photo=message.photo.file_id, caption=message_text)
+                    elif message.video:
+                        client.send_video(chat_id=dest_channel_id, video=message.video.file_id, caption=message_text)
+                    elif message.document:
+                        client.send_document(chat_id=dest_channel_id, document=message.document.file_id, caption=message_text)
                     else:
                         client.send_message(chat_id=dest_channel_id, text=message_text)
+                else:
+                    client.send_message(chat_id=dest_channel_id, text=message_text)
 
     except Exception as e:
         print(f"An error occurred: {e}")
 
-subprocess.Popen(["gunicorn", "app:app", "-b", "0.0.0.0:8080"])
+# تشغيل البوت
 app.run()
