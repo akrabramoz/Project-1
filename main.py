@@ -58,7 +58,7 @@ source_destination_mapping = {
 
 
 #VIP US30 PRO 
-    (-1002453755994):[-1002043161677],
+    
 
 #FX GOLD SIGNALS
     (-1002074929751):[-1002019115733],
