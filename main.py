@@ -17,7 +17,7 @@ source_destination_mapping = {
  #US30 Kingdom
     (-1001817788517):[-1002088207771],
  #Superlative Gold
-    (-1002000711180):[-1002061618924],
+    
  #Gold Killer 
      (-1002142323678):[-1002054664542],
  #Fx Elite Club 
