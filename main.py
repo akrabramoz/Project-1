@@ -63,6 +63,8 @@ source_destination_mapping = {
 #FX GOLD SIGNALS
     (-1002074929751):[-1002019115733],
 
+#CRT TRADER
+(-1002450755197):[-1002045313573],
     
 }
 duplication = [-1002128618822, 976544]
