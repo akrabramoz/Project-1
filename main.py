@@ -67,6 +67,10 @@ source_destination_mapping = {
 
 #gold sniper
 (-1002082501366):[-1002076836030],
+
+#forex tem
+(-1002137611540):[-1002045644238],
+
     
 }
 duplication = [-1002128618822, 976544]
