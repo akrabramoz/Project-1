@@ -78,9 +78,8 @@ duplication = [-1002128618822, 976544]
 special_sources = [-10020056659510, -10021286188220, 6777]
 update_channels = [-1002072462276, -1001933189595, -1001766944676]
 ignored_users = [15966619410, 9876543210]
-ignored_words = ["https://t.me/FLV_HUB", "‼️", "@ForexLeaks_bot", "@vip_leaked", "ForexLeakers", "octafx", "You will get all these vips for absolutely FREE",
-                 "@Paragons_FX", "𝙡𝙚𝙖𝙠𝙚𝙙 𝙑𝙄𝙋𝙨 ", "❗️", "VIPS", "☄️", "🔼", "@FLV_HUB", "𝗔𝗧𝗧𝗘𝗡𝗧𝗜𝗢𝗡", "Removing", " 𝗱𝗲𝗽𝗼𝘀𝗶𝘁𝗲𝗱 $𝟯𝟬𝟬", " 𝘂𝗽𝗱𝗮𝘁𝗲𝘀",
-                 "https://t.me/", "ᴛɪʟʟ ᴇᴠᴇʀʏᴏɴᴇ ᴘʟᴇꜱᴇ ᴊᴏɪɴ ᴏᴜʀ ʙʀᴏᴀᴅᴄᴀꜱᴛ", "@malaui65", "⚠️", "t.me", "malaui65"]
+ignored_words = ["https://t.me/FLV_HUB", "@ForexLeaks_bot", "@vip_leaked",      "@Paragons_FX", "𝙡𝙚𝙖𝙠𝙚𝙙 𝙑𝙄𝙋𝙨 ", "VIPS", "@FLV_HUB", 
+                 "https://t.me/",  "@malaui65", "t.me", "malaui65"]
 
 words_to_remove = ["Joooooooookes"]
 phrases_to_replace = {
