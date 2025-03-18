@@ -25,7 +25,7 @@ source_destination_mapping = {
  #Fx Predators 
   (-1002052838344):[-1002032658531],
  #Time2Trade
-    (-1002096893961):[-1002076836030],
+    
  #NAS 100 PRO
      (-1002051989870) :[-1002102118137],
 #SMC PREMIUM
