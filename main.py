@@ -83,7 +83,7 @@ special_sources = [-10020056659510, -10021286188220, 6777]
 update_channels = [-1002072462276, -1001933189595, -1001766944676]
 ignored_users = [15966619410, 9876543210]
 ignored_words = ["https://t.me/FLV_HUB", "@ForexLeaks_bot", "@vip_leaked",      "@Paragons_FX", "𝙡𝙚𝙖𝙠𝙚𝙙 𝙑𝙄𝙋𝙨 ", "VIPS", "@FLV_HUB", 
-                 "https://t.me/",  "@malaui65", "t.me", "malaui65"]
+                 "https://t.me/",  "@malaui65", "t.me", "malaui65", "BFSBundle", "@BFSBundle", "@BFSAdmin7", "leaked"]
 
 words_to_remove = ["Joooooooookes"]
 phrases_to_replace = {
