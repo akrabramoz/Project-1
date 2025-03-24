@@ -1,3 +1,13 @@
+from telethon.sync import TelegramClient
+
+  async def main():
+      client = TelegramClient('session_name', api_id, api_hash)
+      await client.start()
+      # ... باقي الكود
+
+
+
+
 import re
 import time
 from pyrogram import Client, filters
