@@ -2,3 +2,5 @@ pyrogram
 Flask
 gunicorn
 pyrogram-repl
+telethon==1.28.5
+  sqlite3
