@@ -1,6 +1,6 @@
 from telethon.sync import TelegramClient
 
-  async def main():
+async def main():
       client = TelegramClient('session_name', api_id, api_hash)
       await client.start()
       # ... باقي الكود
