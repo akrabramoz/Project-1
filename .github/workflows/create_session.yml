@@ -1,28 +1,31 @@
 name: Create Pyrogram Session
+
 on: workflow_dispatch
 
 jobs:
   create-session:
     runs-on: ubuntu-latest
-     steps:
+
+    steps:
+      - name: Set up job
+        run: echo "Setting up job"
+
       - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Set up Python
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
       - name: Install dependencies
-        run: |
-          pip install pyrogram tgcrypto
+        run: pip install pyrogram tgcrypto
 
       - name: Run Pyrogram session creation
-        env:
-          SESSION_STRING: ${{ secrets.SESSION_STRING }}
         run: python create_session.py
+
       - name: Upload session file
         uses: actions/upload-artifact@v3
         with:
-        name: session
-        path: session.txt
+          name: session
+          path: session.txt
