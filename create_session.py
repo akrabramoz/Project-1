@@ -1,8 +1,12 @@
-from pyrogram import Client
 import os
+from pyrogram import Client
 
-api_id = int(os.getenv("API_ID"))
-api_hash = os.getenv("API_HASH")
+api_id = 20428083 # استبدله بالـ API_ID الخاص بك
+api_hash = "c2c7f4fd4c392d80f859466a73b677f5"  # استبدله بالـ API_HASH الخاص بك
 
-with Client("my_session", api_id, api_hash) as app:
-    print("Session created successfully!")
+session_string = os.getenv("SESSION_STRING")  # جلب الجلسة من GitHub Secrets
+
+app = Client(":memory:", api_id=api_id, api_hash=api_hash, session_string=session_string)
+
+app.start()
+print("✅ تم تسجيل الدخول بنجاح!")
