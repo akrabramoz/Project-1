@@ -132,7 +132,7 @@ def copy_message(client, message):
                 message_text = replace_phrases(message_text)
             elif message.caption:
                 message_text = remove_words(message.caption)
-                message_text = replace_phrases(message_caption)
+                message_text = replace_phrases(message.caption)
             else:
                 message_text = ""
 
