@@ -11,7 +11,10 @@ SESSION_STRING = "BAE3tTMALDxrv4uOSmrbXhYXk6Us-j2S_SZHYPMBPylNfIItX8eZW3kUKaZI3U
 source_destination_mapping = {
     # تاست خاص بي 
     (-1002072462276): [-1002131940541],
+    #  تاست خاص بي المرسل
+    (-1001949802085): [-1002136852657],
 
+    
     # Modern Elliot
     (-1002043678834): [-1001998466958],
 
