@@ -3,9 +3,11 @@ import time
 from pyrogram import Client, filters
 import subprocess
 import gunicorn
+from googletrans import Translator  # استيراد مكتبة الترجمة
 
 # ضع SESSION_STRING هنا
 SESSION_STRING = "BAE3tTMALDxrv4uOSmrbXhYXk6Us-j2S_SZHYPMBPylNfIItX8eZW3kUKaZI3U9C48Cu1cRAs8BobMujyVOWsq1hSSJoKM_F-j8CoAblO0qW2vekguyBJPxl0YuJkrhJxgaIA83OlnleGtkpf9eH84vdyPmernMhfZwQU0UNR8EdDvi1KXWnBKJQ1-mt8fsNEaVyBJnRDRZKez9OEMjQIgISJmJmKVKIjhzAAaM1_kEcE3Dcok6KmeLFgT75J1F8elkB9238W3QjZqQgaruvkiu3YXUw70-DY9_b6eJmpaqNYzrBrlIZLJzlKhoGqPlMe12wBeYn7inlUKc9-50hrrJ8Y3zI2gAAAAGG6oJvAA"
+
 
 source_destination_mapping = {
     # تاست خاص بي 
@@ -80,8 +82,11 @@ phrases_to_replace = {
     "Foooooo": "Remeoomb"
 }
 
+# القنوات التي سيتم فيها تفعيل الترجمة
+translation_enabled_channels = [-1002072462276,-1002082501366]  # ضع هنا أرقام القنوات التي تريد تفعيل الترجمة فيها
+
 # إنشاء عميل Pyrogram باستخدام SESSION_STRING
-app = Client(name="my_bot", session_string=SESSION_STRING)
+app = Client(session_string=SESSION_STRING)
 
 def get_last_n_messages(client, chat_id, n=4):
     return client.get_chat_history(chat_id=chat_id, limit=n)
@@ -102,6 +107,11 @@ def replace_phrases(text):
     for original_phrase, new_phrase in phrases_to_replace.items():
         text = re.sub(r'\b' + re.escape(original_phrase) + r'\b', new_phrase, text)
     return text
+
+def translate_text(text):
+    """ترجمة النص من الإنجليزية إلى العربية إذا كان مطلوبًا"""
+    translator = Translator()
+    return translator.translate(text, src="en", dest="ar").text
 
 @app.on_message(filters.chat(list(source_destination_mapping.keys())) & ~filters.forwarded)
 def copy_message(client, message):
@@ -130,9 +140,13 @@ def copy_message(client, message):
             if message.text:
                 message_text = remove_words(message.text)
                 message_text = replace_phrases(message_text)
+                if source_channel_id in translation_enabled_channels:  # التحقق مما إذا كانت الترجمة مفعلة لهذه القناة
+                    message_text = translate_text(message_text)
             elif message.caption:
                 message_text = remove_words(message.caption)
-                message_text = replace_phrases(message.caption)
+                message_text = replace_phrases(message_text)
+                if source_channel_id in translation_enabled_channels:  # التحقق مما إذا كانت الترجمة مفعلة لهذه القناة
+                    message_text = translate_text(message_text)
             else:
                 message_text = ""
 
