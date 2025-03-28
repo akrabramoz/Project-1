@@ -88,7 +88,7 @@ phrases_to_replace = {
 }
 
 # إعدادات التأخير
-DELAY_DURATION = 1
+   time.sleep(1)
 
 # إنشاء عميل Pyrogram
 app = Client(name="my_bot", session_string=SESSION_STRING)
