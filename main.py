@@ -12,60 +12,10 @@ SESSION_STRING = "BAE3tTMALDxrv4uOSmrbXhYXk6Us-j2S_SZHYPMBPylNfIItX8eZW3kUKaZI3U
 source_destination_mapping = {
     # تاست خاص بي 
     (-1002072462276): [-1002131940541],
-
-    # Modern Elliot
-    (-1002043678834): [-1001998466958],
-
-    # US30 Kingdom
-    (-1001817788517): [-1002088207771],
-
-    # Gold Killer
-    (-1002142323678): [-1002054664542],
-
-    # Fx Elite Club
-    (-1002057255999): [-1002134643748],
-
-    # Fx Predators
-    (-1002052838344): [-1002032658531],
-
-    # NAS 100 PRO
-    (-1002051989870): [-1002102118137],
-
-    # PROPFRIM TRADERS
-    (-1002064671229): [-1002002911906],
-
-    # ZA GOLD SCALPER
-    (-1002000711180): [-1002023473272],
-
-    # FOREX HINTS
-    (-1002121086305): [-1002117688852],
-
-    # WANDA
-    (-1001948739186): [-1002021715309],
-
-    # TRADING WITH MASTER
-    (-1002029100734): [-1002137778091],
-
-    # ALEX
-    (-1002039208753): [-1002082429891],
-
-    # FOREX GURU
-    (-1001992843192): [-1002051298823],
-
-    # 15M SIGNALS
-    (-1002036974913): [-1002120753195],
-
-    # FX GOLD SIGNALS
-    (-1002074929751): [-1002019115733],
-
-    # gold sniper t2
+       # gold sniper t2
     (-1002082501366): [-1002076836030],
 
-    # forex tem t3
-    (-1002137611540): [-1002045644238],
 
-    # غولد إينجن t4
-    (-1002071601295): [-1002122596670],
 }
 
 duplication = [-1002128618822, 976544]
@@ -86,7 +36,7 @@ phrases_to_replace = {
 translation_enabled_channels = [-1002072462276,-1002082501366]  # ضع هنا أرقام القنوات التي تريد تفعيل الترجمة فيها
 
 # إنشاء عميل Pyrogram باستخدام SESSION_STRING
-app = Client(session_string=SESSION_STRING)
+app = Client("my_session", session_string=SESSION_STRING)
 
 def get_last_n_messages(client, chat_id, n=4):
     return client.get_chat_history(chat_id=chat_id, limit=n)
