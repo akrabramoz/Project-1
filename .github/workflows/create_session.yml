@@ -29,3 +29,5 @@ jobs:
         with:
           name: session
           path: session.txt
+      - name: Check installed actions
+        run: ls -R /home/runner/work/_actions
