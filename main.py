@@ -87,8 +87,6 @@ phrases_to_replace = {
     "Foooooo": "Remeoomb"
 }
 
-# إعدادات التأخير
-   time.sleep(1)
 
 # إنشاء عميل Pyrogram
 app = Client(name="my_bot", session_string=SESSION_STRING)
@@ -163,7 +161,7 @@ def copy_message(client, message):
             return
 
         # تطبيق التأخير
-        time.sleep(DELAY_DURATION)
+        time.sleep(1)
 
         # التحقق من التكرار عبر المصادر
         other_messages = get_last_message_per_source(client)
