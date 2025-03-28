@@ -81,7 +81,7 @@ phrases_to_replace = {
 }
 
 # إنشاء عميل Pyrogram باستخدام SESSION_STRING
-app = Client(session_string=SESSION_STRING)
+app = Client(name="my_bot", session_string=SESSION_STRING)
 
 def get_last_n_messages(client, chat_id, n=4):
     return client.get_chat_history(chat_id=chat_id, limit=n)
