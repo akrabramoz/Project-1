@@ -25,7 +25,7 @@ jobs:
         run: python create_session.py
 
       - name: Upload session file
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: session
           path: session.txt
