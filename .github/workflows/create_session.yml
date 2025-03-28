@@ -24,10 +24,20 @@ jobs:
       - name: Run Pyrogram session creation
         run: python create_session.py
 
+      - name: Check if session file exists
+        run: |
+          if [ -f "session.txt" ]; then
+            echo "Session file exists."
+          else
+            echo "Session file is missing!"
+            exit 1
+          fi
+
       - name: Upload session file
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: session
           path: session.txt
+
       - name: Check installed actions
         run: ls -R /home/runner/work/_actions
