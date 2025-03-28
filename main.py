@@ -34,7 +34,7 @@ phrases_to_replace = {
 
 
 # إنشاء عميل Pyrogram باستخدام SESSION_STRING
-app = Client("my_session", session_string=SESSION_STRING)
+app = Client(name="my_bot", session_string=SESSION_STRING)
 
 
 # ... [المتغيرات الأصلية تبقى كما هي] ...
