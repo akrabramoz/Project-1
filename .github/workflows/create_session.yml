@@ -22,7 +22,7 @@ jobs:
           SESSION_STRING: ${{ secrets.SESSION_STRING }}
         run: python create_session.py
       - name: Upload session file
-      uses: actions/upload-artifact@v3
-      with:
+        uses: actions/upload-artifact@v3
+        with:
         name: session
         path: session.txt
