@@ -33,11 +33,8 @@ jobs:
             exit 1
           fi
 
-      - name: Upload session file
-        uses: actions/upload-artifact@v3
-        with:
-          name: session
-          path: session.txt
+      - name: Compress session file
+        run: tar -czvf session.tar.gz session.txt
 
-      - name: Check installed actions
-        run: ls -R /home/runner/work/_actions
+      - name: Display download link
+        run: echo "Session file is ready. You can download it from the artifacts tab."
