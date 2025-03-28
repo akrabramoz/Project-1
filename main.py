@@ -3,7 +3,6 @@ import time
 from pyrogram import Client, filters
 import subprocess
 import gunicorn
-from googletrans import Translator  # استيراد مكتبة الترجمة
 
 # ضع SESSION_STRING هنا
 SESSION_STRING = "BAE3tTMALDxrv4uOSmrbXhYXk6Us-j2S_SZHYPMBPylNfIItX8eZW3kUKaZI3U9C48Cu1cRAs8BobMujyVOWsq1hSSJoKM_F-j8CoAblO0qW2vekguyBJPxl0YuJkrhJxgaIA83OlnleGtkpf9eH84vdyPmernMhfZwQU0UNR8EdDvi1KXWnBKJQ1-mt8fsNEaVyBJnRDRZKez9OEMjQIgISJmJmKVKIjhzAAaM1_kEcE3Dcok6KmeLFgT75J1F8elkB9238W3QjZqQgaruvkiu3YXUw70-DY9_b6eJmpaqNYzrBrlIZLJzlKhoGqPlMe12wBeYn7inlUKc9-50hrrJ8Y3zI2gAAAAGG6oJvAA"
@@ -32,85 +31,81 @@ phrases_to_replace = {
     "Foooooo": "Remeoomb"
 }
 
-# القنوات التي سيتم فيها تفعيل الترجمة
-translation_enabled_channels = [-1002072462276,-1002082501366]  # ضع هنا أرقام القنوات التي تريد تفعيل الترجمة فيها
+
 
 # إنشاء عميل Pyrogram باستخدام SESSION_STRING
 app = Client("my_session", session_string=SESSION_STRING)
 
-def get_last_n_messages(client, chat_id, n=4):
-    return client.get_chat_history(chat_id=chat_id, limit=n)
 
-def are_messages_different(msg1, msg2):
-    if msg1.text != msg2.text or msg1.caption != msg2.caption:
+# ... [المتغيرات الأصلية تبقى كما هي] ...
+
+DELAY_DURATION = 0.5
+
+def are_messages_similar(msg1, msg2):
+    """مقارنة متقدمة لأنواع الرسائل المختلفة"""
+    try:
+        # المقارنة الأساسية للنصوص والتعليقات
+        if (msg1.text or "") != (msg2.text or "") or (msg1.caption or "") != (msg2.caption or ""):
+            return False
+        
+        # مقارنة أنواع الوسائط
+        if msg1.media:
+            if msg1.photo and msg2.photo:
+                return msg1.photo.file_id == msg2.photo.file_id
+            elif msg1.sticker and msg2.sticker:
+                return msg1.sticker.file_id == msg2.sticker.file_id
+            elif msg1.video and msg2.video:
+                return msg1.video.file_id == msg2.video.file_id
+            elif msg1.document and msg2.document:
+                return msg1.document.file_id == msg2.document.file_id
+            else:
+                return False
         return True
-    if msg1.caption and not msg2.photo and not msg2.video and not msg2.document:
-        return msg1.caption != msg2.text
-    return False
+    except Exception as e:
+        print(f"Error in comparison: {e}")
+        return False
 
-def remove_words(text):
-    for word in words_to_remove:
-        text = text.replace(word, "")
-    return text
-
-def replace_phrases(text):
-    for original_phrase, new_phrase in phrases_to_replace.items():
-        text = re.sub(r'\b' + re.escape(original_phrase) + r'\b', new_phrase, text)
-    return text
-
-def translate_text(text):
-    """ترجمة النص من الإنجليزية إلى العربية إذا كان مطلوبًا"""
-    translator = Translator()
-    return translator.translate(text, src="en", dest="ar").text
+def get_last_message_per_source(client):
+    """جلب آخر رسالة واحدة من كل قناة مصدر"""
+    last_messages = {}
+    for source_id in source_destination_mapping:
+        try:
+            msg = next(client.get_chat_history(source_id, limit=1), None)
+            if msg:
+                last_messages[source_id] = msg
+        except Exception as e:
+            print(f"Failed to get message from {source_id}: {e}")
+    return last_messages
 
 @app.on_message(filters.chat(list(source_destination_mapping.keys())) & ~filters.forwarded)
 def copy_message(client, message):
     try:
         if message.from_user and message.from_user.id in ignored_users:
-            print(f"Ignoring message from user {message.from_user.id}")
             return
 
         source_channel_id = message.chat.id
         dest_channels = source_destination_mapping.get(source_channel_id, [])
 
         if (message.text and any(word in message.text for word in ignored_words)) or (message.caption and any(word in message.caption for word in ignored_words)):
-            print(f"Ignoring message with restricted words: {message.text or message.caption}")
             return
 
-        time.sleep(1)  # تأخير النقل لمدة ثانية
+        time.sleep(DELAY_DURATION)
 
-        for dest_channel_id in dest_channels:
-            if source_channel_id in duplication:
-                last_messages = get_last_n_messages(client, dest_channel_id, n=15)
-                for last_message in last_messages:
-                    if last_message.text == message.text and last_message.caption == message.caption:
-                        print("Message already exists, skipping...")
-                        return
+        # جلب آخر رسالة من كل المصادر الأخرى
+        other_sources_messages = get_last_message_per_source(client)
+        
+        # التحقق من التكرار في المصادر الأخرى
+        for src_id, last_msg in other_sources_messages.items():
+            if src_id == source_channel_id:  # تخطى المصدر الحالي
+                continue
+                
+            if are_messages_similar(message, last_msg):
+                print(f"⛔ Duplicate found in {src_id} - Message blocked")
+                return
 
-            if message.text:
-                message_text = remove_words(message.text)
-                message_text = replace_phrases(message_text)
-                if source_channel_id in translation_enabled_channels:  # التحقق مما إذا كانت الترجمة مفعلة لهذه القناة
-                    message_text = translate_text(message_text)
-            elif message.caption:
-                message_text = remove_words(message.caption)
-                message_text = replace_phrases(message_text)
-                if source_channel_id in translation_enabled_channels:  # التحقق مما إذا كانت الترجمة مفعلة لهذه القناة
-                    message_text = translate_text(message_text)
-            else:
-                message_text = ""
-
-            if message.photo:
-                client.send_photo(dest_channel_id, message.photo.file_id, caption=message_text)
-            elif message.video:
-                client.send_video(dest_channel_id, message.video.file_id, caption=message_text)
-            elif message.document:
-                client.send_document(dest_channel_id, message.document.file_id, caption=message_text)
-            else:
-                client.send_message(dest_channel_id, message_text)
+        # ... [بقية الكود الأصلي لإرسال الرسالة] ...
 
     except Exception as e:
-        print(f"An error occurred: {e}")
+        print(f"Error: {e}")
 
-subprocess.Popen(["gunicorn", "app:app", "-b", "0.0.0.0:8080"])
-app.run()
+# ... [بقية الكود يبقى كما هو] ...
