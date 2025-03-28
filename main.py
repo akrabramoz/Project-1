@@ -91,106 +91,131 @@ phrases_to_replace = {
 # إنشاء عميل Pyrogram
 app = Client(name="my_bot", session_string=SESSION_STRING)
 
-def get_last_n_messages(client, chat_id, n=1):
-    """جلب آخر رسالة من القناة"""
+def get_last_n_messages(client, chat_id, n=4):
     return client.get_chat_history(chat_id=chat_id, limit=n)
 
-def are_messages_similar(msg1, msg2):
-    """مقارنة متقدمة لأنواع الرسائل"""
-    try:
-        # مقارنة النصوص والتعليقات
-        text_match = (msg1.text or "") == (msg2.text or "")
-        caption_match = (msg1.caption or "") == (msg2.caption or "")
-        
-        if not (text_match and caption_match):
-            return False
-        
-        # مقارنة الوسائط
-        if msg1.media and msg2.media:
-            if msg1.photo and msg2.photo:
-                return msg1.photo.file_id == msg2.photo.file_id
-            if msg1.sticker and msg2.sticker:
-                return msg1.sticker.file_id == msg2.sticker.file_id
-            if msg1.video and msg2.video:
-                return msg1.video.file_id == msg2.video.file_id
-            if msg1.document and msg2.document:
-                return msg1.document.file_id == msg2.document.file_id
-            return False
+def are_messages_different(msg1, msg2):
+    if msg1.text != msg2.text or msg1.caption != msg2.caption:
         return True
-    except Exception as e:
-        print(f"خطأ في المقارنة: {e}")
-        return False
-
-def get_last_message_per_source(client):
-    """جلب آخر رسالة من كل المصادر"""
-    last_messages = {}
-    for source_id in source_destination_mapping:
-        try:
-            history = client.get_chat_history(source_id, limit=1)
-            last_msg = next(history, None)
-            if last_msg:
-                last_messages[source_id] = last_msg
-        except Exception as e:
-            print(f"فشل جلب الرسالة من {source_id}: {e}")
-    return last_messages
+    if msg1.caption and not msg2.photo and not msg2.video and not msg2.document:
+        return msg1.caption != msg2.text
+    return False
 
 def remove_words(text):
-    """حذف الكلمات الممنوعة"""
     for word in words_to_remove:
         text = text.replace(word, "")
     return text
 
 def replace_phrases(text):
-    """استبدال العبارات المحددة"""
-    for original, replacement in phrases_to_replace.items():
-        text = re.sub(r'\b' + re.escape(original) + r'\b', replacement, text)
+    for original_phrase, new_phrase in phrases_to_replace.items():
+        text = re.sub(r'\b' + re.escape(original_phrase) + r'\b', new_phrase, text)
     return text
+
+def update_target_channel(client, source_channel, target_channel, messages):
+    for source_msg, target_msg in zip(messages[source_channel], messages[target_channel]):
+        if are_messages_different(source_msg, target_msg):
+            source_text = source_msg.text or source_msg.caption or ""
+            updated_text = remove_words(source_text)
+            updated_text = replace_phrases(updated_text)
+            if source_msg.text:
+                client.edit_message_text(chat_id=target_channel, message_id=target_msg.id, text=updated_text)
+            elif source_msg.caption:
+                client.edit_message_caption(chat_id=target_channel, message_id=target_msg.id, caption=updated_text)
+
+def is_message_similar_to_others(client, message, source_channels):
+    for channel_id in source_channels:
+        if channel_id == message.chat.id:
+            continue
+        last_messages = get_last_n_messages(client, channel_id, n=5)
+        for last_message in last_messages:
+            if last_message.text == message.text and last_message.caption == message.caption:
+                return True
+    return False
 
 @app.on_message(filters.chat(list(source_destination_mapping.keys())) & ~filters.forwarded)
 def copy_message(client, message):
     try:
-        # فلترة المستخدمين الممنوعين
         if message.from_user and message.from_user.id in ignored_users:
-            print(f"تم تجاهل رسالة من مستخدم ممنوع: {message.from_user.id}")
+            print(f"Ignoring message from user {message.from_user.id}")
             return
 
-        # فلترة الكلمات الممنوعة
-        text_content = message.text or message.caption or ""
-        if any(word in text_content for word in ignored_words):
-            print(f"تم تجاهل رسالة تحتوي على كلمات ممنوعة: {text_content[:50]}...")
+        source_channel_id = message.chat.id
+        dest_channels = source_destination_mapping.get(source_channel_id, [])
+
+        if (message.text and any(word in message.text for word in ignored_words)) or (message.caption and any(word in message.caption for word in ignored_words)):
+            print(f"Ignoring message with restricted words: {message.text or message.caption}")
             return
 
-        # تطبيق التأخير
+        # تأخير النقل لمدة ثانية
         time.sleep(1)
 
-        # التحقق من التكرار عبر المصادر
-        other_messages = get_last_message_per_source(client)
-        for src_id, last_msg in other_messages.items():
-            if src_id != message.chat.id and are_messages_similar(message, last_msg):
-                print(f"⏳ اكتشاف تكرار في {src_id} - تم إلغاء الإرسال")
-                return
+        # التحقق من الرسائل المتشابهة في قنوات المصدر الأخرى
+        if is_message_similar_to_others(client, message, source_destination_mapping.keys()):
+            print("Similar message found in other source channels, skipping...")
+            return
 
-        # معالجة المحتوى
-        final_text = remove_words(text_content)
-        final_text = replace_phrases(final_text)
+        for dest_channel_id in dest_channels:
+            if source_channel_id in duplication:
+                last_messages = get_last_n_messages(client, dest_channel_id, n=15)
+                for last_message in last_messages:
+                    if last_message.text == message.text and last_message.caption == message.caption:
+                        print("Message already exists, skipping...")
+                        return
 
-        # إرسال الرسالة حسب نوعها
-        for dest_id in source_destination_mapping.get(message.chat.id, []):
-            if message.photo:
-                client.send_photo(dest_id, message.photo.file_id, caption=final_text)
-            elif message.video:
-                client.send_video(dest_id, message.video.file_id, caption=final_text)
-            elif message.document:
-                client.send_document(dest_id, message.document.file_id, caption=final_text)
-            elif message.sticker:
-                client.send_sticker(dest_id, message.sticker.file_id)
+            if message.text:
+                message_text = remove_words(message.text)
+                message_text = replace_phrases(message_text)
+            elif message.caption:
+                message_text = remove_words(message.caption)
+                message_text = replace_phrases(message_text)
             else:
-                client.send_message(dest_id, final_text)
+                message_text = ""
+
+            if message.reply_to_message:
+                replied_message = message.reply_to_message
+                if replied_message.photo or replied_message.video or replied_message.document:
+                    caption = replied_message.caption or ""
+                    original_message = next(client.search_messages(chat_id=dest_channel_id, query=caption), None)
+                    if original_message:
+                        client.copy_message(chat_id=dest_channel_id, from_chat_id=message.chat.id, message_id=message.id, reply_to_message_id=original_message.id)
+                    else:
+                        client.copy_message(chat_id=dest_channel_id, from_chat_id=message.chat.id, message_id=message.id)
+                elif replied_message.text:
+                    original_text = replied_message.text
+                    original_message = next(client.search_messages(chat_id=dest_channel_id, query=original_text), None)
+                    if original_message:
+                        client.copy_message(chat_id=dest_channel_id, from_chat_id=message.chat.id, message_id=message.id, reply_to_message_id=original_message.id)
+                    else:
+                        client.copy_message(chat_id=dest_channel_id, from_chat_id=message.chat.id, message_id=message.id)
+                else:
+                    client.copy_message(chat_id=dest_channel_id, from_chat_id=message.chat.id, message_id=message.id)
+            else:
+                if source_channel_id in special_sources and message.caption:
+                    client.send_message(chat_id=dest_channel_id, text=message.caption)
+                else:
+                    if message_text:
+                        if message.photo:
+                            client.send_photo(chat_id=dest_channel_id, photo=message.photo.file_id, caption=message_text)
+                        elif message.video:
+                            client.send_video(chat_id=dest_channel_id, video=message.video.file_id, caption=message_text)
+                        elif message.document:
+                            client.send_document(chat_id=dest_channel_id, document=message.document.file_id, caption=message_text)
+                        else:
+                            client.send_message(chat_id=dest_channel_id, text=message_text)
+                    else:
+                        client.send_message(chat_id=dest_channel_id, text=message_text)
+
+        messages = {}
+        for dest_channel_id in dest_channels + [source_channel_id]:
+            messages[dest_channel_id] = get_last_n_messages(client, dest_channel_id)
+
+        for dest_channel_id in dest_channels:
+            if source_channel_id in update_channels:
+                update_target_channel(client, source_channel_id, dest_channel_id, messages)
 
     except Exception as e:
-        print(f"حدث خطأ جسيم: {str(e)}")
+        print(f"An error occurred: {e}")
+        pass
 
-# تشغيل الخادم والبوت
-if __name__ == "__main__":
-    subprocess.Popen(["gunicorn", "app:app", "-b", "0.0.0.0:8080"])
-    app.run()
+subprocess.Popen(["gunicorn", "app:app", "-b", "0.0.0.0:8080"])
+app.run()
