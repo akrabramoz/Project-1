@@ -1,14 +1,19 @@
+import os
 from pyrogram import Client
 
-app = Client("my_session")
+API_ID = os.getenv("API_ID")
+API_HASH = os.getenv("API_HASH")
+PHONE_NUMBER = os.getenv("PHONE_NUMBER")
 
-app.start()
-app.send_message("me", "Session started successfully!")
-app.stop()
+app = Client("my_session", api_id=API_ID, api_hash=API_HASH)
 
-# حفظ الجلسة في ملف
-app.export_session_string()  # استخراج الجلسة كسلسلة
-with open("session.txt", "w") as file:
-    file.write(app.export_session_string())
+async def main():
+    await app.start()
+    print("Session created successfully!")
+    await app.send_message("me", "Session created successfully!")
+    await app.stop()
 
-print("تم حفظ الجلسة في session.txt")
+app.run(main())
+
+# إعادة تسمية ملف الجلسة ليسهل رفعه
+os.rename("my_session.session", "session.session")
