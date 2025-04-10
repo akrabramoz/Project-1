@@ -84,8 +84,8 @@ update_channels = [-1002072462276, -1001933189595, -1001766944676]
 ignored_users = [15966619410, 9876543210]
 ignored_words = [
     "https://t.me/FLV_HUB", "@ForexLeaks_bot", "@vip_leaked", "@Paragons_FX",
-    "𝙡𝙚𝙖𝙠𝙚𝙙 𝙑𝙄𝙋𝙨 ", "VIPS", "@FLV_HUB", "https://t.me/", "@malaui65",
-    "t.me", "malaui65", "BFSBundle", "@BFSBundle", "@BFSAdmin7", "leaked"
+    "𝙡𝙚𝙖𝙠𝙚𝙙 𝙑𝙄𝙋𝙨 ", "VIPS", "@FLV_HUB", "@malaui65",
+     "malaui65", "BFSBundle", "@BFSBundle", "@BFSAdmin7", "leaked" , "https://t.me/BFSbundle"
 ]
 
 words_to_remove = ["Joooooooookes"]
